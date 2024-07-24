@@ -425,7 +425,7 @@ Namelen inform us about the maximum filename leghth possible to set
 SOFT AND HARD LINKS
 
 Links ->shortcuts to original destination/file  
-  ->pseudo-file
+  ->pseudo-file  
 you created a shortcut to file or directory in Windows system. When you open this shortcut, in fact you open the original location. In linux, when you open the link, the system sees it as object opened from the location where it resides, not the original (or source) location  
 
 ln -> to create both types links  
@@ -433,7 +433,7 @@ ln SOURCE TARGET  ->to create hard links
 ln -s SOURCE TARGET ->to create soft links
 
 exemple:  
-lrwxrwxrwx 1 root root 15 May 15 11:20 softlink -> ../source/file1 (a soft link)
+lrwxrwxrwx 1 root root 15 May 15 11:20 softlink -> ../source/file1 (a soft link)  
 -> l on the beginning of permissions matrix, which informs us clearly that it is the link  
 ->origin location, or redirection. However we weill call it, the fact is that this shows us the name of the link and where is the origin  
 
@@ -452,6 +452,7 @@ inode           inode
    Storage  
 
 Both files have their own inodes and we can say that inode of link is a shortcut to inode of original file. Only one inode points to the object on storage - original one  
+When we remove the original file neither link itself or inode has understanding how to get to the storage.  
 
 Hard links
 
@@ -461,3 +462,79 @@ File       hard link
          |  
        Storage  
 
+Both files - original and link, point to the same inode. And this inode points to the object on storage.  
+when we remove the original file We remove just the file. Inode stays s long as anything is related to it 
+
+-You can't create a hard link to a directory. It only applies to files  
+-If an original file is deleted, the hard link still exists  
+-A hard link remains intact when an original file is moved or renamed  
+-A file exists until the last hard link is deleted  
+-It is not possible to create a hard link between two file systems  
+-The content change is reflected in all linked files  
+
+INODES
+
+An inode is an index node. It serves as a unique identifier for a specific piece of metadata on a given filesystem, and the disk block location of this object  
+To check inode of specific file, we use -i argument for ls command  
+
+blockdev --getbsz /dev/vda ->this way we determined the block size used on the filesystem  
+
+PERMISSIONS
+
+example:
+  - rwx r-x r--
+
+On the beginning we have information about object's type  
+- d on the first place of the matrix means directory  
+- l in the same place means soft (symbolic) link  
+- - means file  
+- b - block special file (like hard drive)  
+- n - network file  
+- p - FIFO  
+- s - socket  
+
+These three blocks are related to specific user or users  
+-Owner. This is the user who owns the file. Not necessairly the author, but current owner  
+-Group. Every file in Linux can have the distinct permissions for one, selected group. By default, this group is set to the owner's group, but it can be changed  
+-Others. All other users in the system  
+
+Each group (owner, group and others) is build with three parts  
+-r - means Read permission is granted  
+-w - means Write permission is granted  
+-x - means eXecute permission is granted  
+
+example: drwx------ 2 root root 4096 May 2 10:20 .ssh  
+that it is a directory (d) with full access for owner (rwx) and no access for the group and others (---)  
+
+Two methods of setting permissions  
+Absolute, or numeric mode uses digits to set permissions in each block. Each block is represented by one digit. Each digit has specific meaning  
+0 - no access  
+1 - execute  
+2 - write  
+3 - write + execute  
+4 - read  
+5 - read + execute  
+6 - read + write  
+7 - read + write + execute  
+
+!!eXecute doesn't simply mean execute the file or program, etc. It also means execute the directory, what allows us to enter into the directory.  
+
+Symbolic mode allows us to work in more easier, more visual way. Here we use operator and the user denotation to define the permission matrix  
+= -Set the whole block and override the previous permissions  
+- -Remove the permission for specific user  
++ -Add the permission for specific user  
+
+u - owner  
+g - group  
+o - other  
+a- all  
+
+if I want to make it executable for me, I use u+x.f I want to do it for everyone - a+x  
+
+chmod -> to change permissions  
+chmod permissions objects  
+
+We mentioned earlier, that directory has different default permissions than files(drwxr-xr-x, what means that owner can do everything, but group and other cannot write anything in the directory)  
+
+chgrp <group> <objects> ->  In order to change the group  
+chown <owner>:<group> <objects> ->to change owner
