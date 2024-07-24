@@ -394,4 +394,70 @@ Example:
 in our example, system will execute the command at 17:1 on 7th of April. But only if it will be Tuesday.  
 If we set day/month, we generally not set weekday. The same in oposite direction.  
 If we want to keep every in any of position, we use *(So, if we set 15 * as two first elements, it means: execute 15 minutes after every hour)  
+-user - we do not set user for user related crontabs, it doesn't make any sense, but for system wide crontab this possibility is valuable  
+-command  
+
+/var/spool/cron/crontabs ->In this directory user's crontabs are stored  
+Each entry in crontab is called cronjob.  
+crontab -l -> To list our jobs  
+crontab -e -> opens crontab editor  
+
+stat allows us to get diffeerent type of information than file  
+With file we can learn what is the type of the file(like file, directory, package, device etc, and if file type is confirmed, it tries to understand the language)  
+
+stat shows information, which we can clasify like more system-oriented  
+-File ->the name of our file  
+-Size  
+-Blocks ->the size of the file but in blocks  
+-IO Block ->size of each block  
+-regular file -> the type of the object. We will not get detailed information about the language, only the type, like file, pipe, directory or special file  
+-Device -> hex/decimal ID of the device on which object is located  
+-Inode -> Inode ID. Inode and Device create the unique identification of the object.  
+-Links -> number of hard links created.Every file will have 1, if there is no hard links created. 0 means the file is deleted  
+-Access - the permission matrix for the object.  
+-Uid and Gid - owner and owner's group identifiers  
+-Access shows almost the time of last access to the file.this value will be updated only if is older than Modify timestamp. Modify says about last modification of the content. And Change is about all changes - content and attributes (like permissions, for example)  
+-Birth is reserved for the time when file was created, but is not implemented in Linux systems  
+
+stat -f mybashscript.sh -> -f gives us information about filesystem.  
+Namelen inform us about the maximum filename leghth possible to set  
+
+SOFT AND HARD LINKS
+
+Links ->shortcuts to original destination/file  
+  ->pseudo-file
+you created a shortcut to file or directory in Windows system. When you open this shortcut, in fact you open the original location. In linux, when you open the link, the system sees it as object opened from the location where it resides, not the original (or source) location  
+
+ln -> to create both types links  
+ln SOURCE TARGET  ->to create hard links  
+ln -s SOURCE TARGET ->to create soft links
+
+exemple:  
+lrwxrwxrwx 1 root root 15 May 15 11:20 softlink -> ../source/file1 (a soft link)
+-> l on the beginning of permissions matrix, which informs us clearly that it is the link  
+->origin location, or redirection. However we weill call it, the fact is that this shows us the name of the link and where is the origin  
+
+unlink LINK -> to delete a link  
+This link is soft, what means in this case that link is a pointer to the source  
+rm softlink ->to remove a soft link  
+
+
+Soft links
+
+File <------soft link  
+  |              |  
+  |              |  
+inode           inode  
+  \  
+   Storage  
+
+Both files have their own inodes and we can say that inode of link is a shortcut to inode of original file. Only one inode points to the object on storage - original one  
+
+Hard links
+
+File       hard link  
+   \          /  
+       inode  
+         |  
+       Storage  
 
