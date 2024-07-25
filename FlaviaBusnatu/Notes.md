@@ -340,6 +340,9 @@ Let's check student1 is sudo is configured for him.
 su - student1
 sudo ps
 
+
+student2 ALL=(ALL:ALL) NOPASSWD:ALL  ->sudo without password  
+
 As mentioned, /var/log is the default location in all Linux systems for logs
 syslog->The main system log. Contains all important information about the system and applications.
 auth.log->Contains information about authorizations. All user login attempts (with information if successful or not), logout, password changes, remote logins and use of sudo
