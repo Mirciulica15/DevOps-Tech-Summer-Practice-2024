@@ -74,3 +74,8 @@ Here is our conflict.
 To solve ->remove lines from 2 to 5(prima linie <<<<, ultima linie >>>>)  
 
 .gitignore -> Git gives us the possibility to control what will be synchronized with remote and what will be not  
+
+GIT TAGS  
+git tag -a v2.0 -m "version 2.0. A lot of new features"-> to create a tag  
+git tag  ->to show the tags  
+git tag -d v1.0 -> to delete a tag  
