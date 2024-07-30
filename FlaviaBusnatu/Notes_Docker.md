@@ -13,6 +13,12 @@ Dacă sursa este un fișier de arhivă (.tar, .gz, .bz2, etc.), ADD îl va decom
 2.Copierea de la URL-uri:  
 ADD poate copia fișiere direct de la URL-uri, descărcându-le în timpul construirii imaginii.  
 
+docker build -t app/v1 .  
+docker build -> pentru a construi o imagine docker  
+-t -> pentru a atribui un tag imaginii  
+
+docker rm -f name ->pentru a elimina un container Docker  
+
 instrucțiunea CMD dintr-un Dockerfile este utilizată pentru a specifica comanda implicită care va fi rulată atunci când un container este pornit.  
 Dockerfile poate conține mai multe instrucțiuni CMD, dar doar ultima instrucțiune CMD va fi luată în considerare. Instrucțiunile CMD anterioare sunt suprascrise de cea finală.  
 ENTRYPOINT este folosit pentru a seta o comandă fixă ce este executată atunci când containerul rulează, făcând containerul să se comporte ca un executabil specific  
@@ -20,3 +26,21 @@ ENTRYPOINT este folosit pentru a seta o comandă fixă ce este executată atunci
 Diferența între CMD și ENTRYPOINT:  
 CMD: Este utilizat pentru a specifica comanda implicită pentru un container. Poate fi ușor suprascrisă.  
 ENTRYPOINT: Definește o comandă fixă care nu poate fi suprascrisă la fel de simplu, doar argumentele sale pot fi modificate.  
+
+Container networking refers to the ability for containers to connect to and communicate with each other, or to non-Docker workloads  
+
+docker run -d -v /root/app-1:/usr/share/nginx/html -p 80:80 --name app-1 nginx:alpine  
+
+docker run ->a rula un nou container Docker  
+-d -> rulează containerul în fundal, permițându-ți să continui să folosești terminalul  
+-v sau --mount-> mapează un volum din gazdă către container  
+Acest lucru înseamnă că orice fișiere din /root/app-1 pe gazdă vor fi disponibile în /usr/share/nginx/html în container. /usr/share/nginx/html este directorul implicit din care NGINX servește fișierele  
+-p -> mapează un port de pe gazdă la un port din container  
+Portul 80 de pe gazdă este mapat la portul 80 din container  
+--name specifică un nume pentru container  
+
+curl localhost:81 -> face o cerere HTTP către serverul care rulează pe gazda locală (localhost) la portul 81  
+
+docker exec -> este folosită pentru a executa comenzi într-un container deja rulând  
+sh -c -> Opțiunea -c permite trecerea unei comenzi complete ca argument pentru shell-ul sh  
+--mount type=bind -> Opțiunea --mount este folosită pentru a atașa un volum la container. type=bind specifică că se folosește un volum de tip bind mount  
