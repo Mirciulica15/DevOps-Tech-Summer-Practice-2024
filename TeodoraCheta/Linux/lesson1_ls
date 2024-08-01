@@ -1,0 +1,27 @@
+$ ls - command that lists the content of the directory
+
+ - , -- used to pass arguments
+
+ -l 
+->long listing format
+->more information
+->permissions, number of hard links, owner, group, size, date+time last modification, file name
+
+. ->the current directory of the user
+..  ->means parent directory
+
+Sorting files:
+->linux timmestamps
+atime - the last time when file was accessed
+mtime - last modification time. By modification we mean change in the file content.
+ctime - last metadata modification time. We mean here - permissions change, location of the file, etc.
+
+
+$ date -command that shows current date and time 
+
+-t = sorts files with the last modification time, newest files come first
+-tu =  specify exactly the modification time
+-tc =  order it by ctime
+-s = shows the short list of files and allocated space
+-S it sorts files by size, largest are going first
+-h =human readable
