@@ -1,0 +1,17 @@
+$ mkdir =  creates directory
+$ mkdir testdir{1..10} =10 directories with the name contains numbers from 1 to 10
+$ mkdir -p parentdir/childdir{01..100} =  under the parentdir we created 100 files, from childdir001 to childdir100
+$ cd =changes directories
+$ pwd = print workin directory
+$ cd parentdir/childdir023 
+$ cd .. = comes back to the previous directory
+$ cd /nume_director = absolute path
+$ cd nume_director = relative path;navigating from the current position
+->return la home directory
+$ cd $HOME 
+$ cd ~
+$ cd
+$ rmdir nume_director
+$ rm =removes files
+-r means go recursively through directories (and treat everything as file)
+-f - force. Another words, do not ask, assume the user knows what he is doing.

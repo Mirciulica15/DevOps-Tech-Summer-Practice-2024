@@ -1,0 +1,10 @@
+$ touch -creates empty file
+$ touch my{01..100}file
+
+* = any string
+? = any single character
+
+$ vim nume_fisier
+i . => insert mode
+esc :wq => iese din editor+salveaza 
+

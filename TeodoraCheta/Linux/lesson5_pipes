@@ -1,0 +1,23 @@
+The pipes and redirections are used to send (or retrieve) some information sent from one command or script to another command or script/files
+$ grep =searches for given pattern in the output(file or output from another command)
+$ grep 'case' .bashrc =searches for pattern case in a file .bashrc
+$ wc -l  .bashrc = counts lines in .bashrc file
+$ sort =sorts the output in alphabetical order
+$ command1 | command2
+$ sort | uniq
+
+redirect to file: 
+> 
+If file doesn't exist, create it
+Add content from redirected output
+If file exists and it is not empty, clear the file and write the redirected output in empty file
+
+>>
+appends to the file
+
+redirect from file:
+<
+
+
+
+
