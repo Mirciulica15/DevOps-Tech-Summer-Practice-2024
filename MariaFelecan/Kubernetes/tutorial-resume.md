@@ -36,29 +36,84 @@
 * Statefull states = takes care of replicating the pods, and makes sure that the db s are syncronized, but it is more difficult than deployments
 
 ## Kubernetes architecture
-NODE
+1 master node, many worker nodes
+
+WORKER NODE
 -> each node has more pods in it
 -> does the actual work
 -> 3 processes must be installed on every node
     1. container runtime 
+
     2. kubelet : interacts with the container and node, starts the pod with the container inside
+
     3. kube proxy : forwards the reqeuest from the app to to the db replica that is in the same node with the app that forwarded the request
 
+    mantains the network configuration across all pods, all containers
+
+CLUSTER = multiple worker nodes
+
 MASTER NODES
+= manages the entire cluster
 -> 4 processes run on each:
     1. API SERVER : cluster gateway - get the initial requests from the cluster + gatekeeper for authentication
+
+    if we want to do any delete/add/etc it needs to go through the API server
+
+    we interact with the API with the UI and kubectl(= go language binary)
 
     req -> Api server -> validates req -> .. -> pod
 
     2. SCHEDULER 
--> just decides on which node the new pod ahoulbe scheduled
+    -> just decides on which node the new pod should be scheduled
 
     schedule new pod -> api server -> scheduler -> where to put the pod -> kubelet
 
     3. CONTROLLER MANAGER
 
     detects cluster state changes
+    ensures that the pods are up and running
 
     controller manager-> schduler -> kubelet -> restart pods
 
     4. ETCD = cluster brain, cluster changes get stored here
+
+    - distributed key value database
+    - stores current cluster states
+
+![entire kubernetes architecture](<Screenshot (1).png>)
+
+## Minikube and Kubectl
+
+in a production cluster setup, qw have at least 2 masters and a lot of worker nodes
+
+* Minikube : 1 node cluster where the master and worker process run on 1 node, so it can run on 1 laptop
+
+- cretes a virtual box on our laptop and that node will run ona  virtual box
+- used for testing purposes for testing purposes
+
+* Kubectl - clt for kubernetes cluster
+
+- used to communicate with the API server, so we can create/delete components etc
+
+    ### installation of minikube and kubectl
+
+    minikube needs virtualization
+    we need hypervisor
+
+## basic kubectl commands
+
+kubectl get nodes -> lists all nodes
+kubectl get pods
+kubectl get services
+
+-> creating a pod
+
+kubectl create deployment name --image=nginx
+
+we are creating DEPLOYMENTS, not directly pods
+deployments are an abstraction over the pod, that creates the pod
+
+kubectl get deployment - we can see the deployments
+kubectl get pod - we can see the pods
+
+
