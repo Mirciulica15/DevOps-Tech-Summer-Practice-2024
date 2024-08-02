@@ -42,4 +42,23 @@ NODE
 -> 3 processes must be installed on every node
     1. container runtime 
     2. kubelet : interacts with the container and node, starts the pod with the container inside
-    3. 
+    3. kube proxy : forwards the reqeuest from the app to to the db replica that is in the same node with the app that forwarded the request
+
+MASTER NODES
+-> 4 processes run on each:
+    1. API SERVER : cluster gateway - get the initial requests from the cluster + gatekeeper for authentication
+
+    req -> Api server -> validates req -> .. -> pod
+
+    2. SCHEDULER 
+-> just decides on which node the new pod ahoulbe scheduled
+
+    schedule new pod -> api server -> scheduler -> where to put the pod -> kubelet
+
+    3. CONTROLLER MANAGER
+
+    detects cluster state changes
+
+    controller manager-> schduler -> kubelet -> restart pods
+
+    4. ETCD = cluster brain, cluster changes get stored here
