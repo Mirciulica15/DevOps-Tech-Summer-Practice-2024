@@ -116,4 +116,34 @@ deployments are an abstraction over the pod, that creates the pod
 kubectl get deployment - we can see the deployments
 kubectl get pod - we can see the pods
 
+kubectl get replicaset : managing the replica of a pod, we dont need to deal with creating them
+
+    * Layers of abstraction:
+
+    Deployment (manages a) -> ReplicaSet (manges a) -> Pod (abstraction of a)-> Container
+
+    EVERITHING below deployment is managed by kuberenetes automatically
+
+kubectl edit deployment name
+    -> we get an auto generated file with default values of the deployment
+
+    * Debugging pods
+
+    kubectl logs <pod-name>
+
+kubectl exec -it <pod-name> -- bin/bash
+
+    -it = interactive terminal
+
+-> deleting the pods : 
+
+kubectl delete deployment <name> - deletes everything, all the replica sets too
+
+-> creating a deployment easier : kubectl apply -f <conf-file-name.yaml>
+
+
+
+
+
+
 
