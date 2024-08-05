@@ -174,6 +174,7 @@ Good pratice to store the conf file withing the code repo
 **Labels and selectors** 
    -  labels are any key value pair
    -  they match a specific selector
+   - selector used to connect to pod through label
 
 **Ports** 
   -   service has a port where the service is located
@@ -223,9 +224,27 @@ spec:
               - containerPort : 27017
               env :
               - name : MONGO_INITDB_ROOT_USERNAME
-                value:
+                valueFrom:
+                    secretKeyRef:
+                        name: mongodb-secret
+                        key: mongo-root-username
               - name : MONGO_INITDB_ROOT_PASSWORD   
-                value: 
+                valueFrom: 
+                    secretKeyRef:  # adding this only in step 5
+                        name: mongodb-secret
+                        key: mongo-root-password
+    ---
+    appVersion: v1   #adding this after the first configuration, in step 7
+    kind: Service
+    metadata:
+        name: mongodb-service
+    spec:
+        selector: 
+            app: mongodb
+        ports:
+        - protocol: TCP
+          port: 27017
+          targetPort: 27017
 ```
 - to see on which port mongo is running, i can check mongodb on dockerhub. the default port is 27017
 
@@ -243,8 +262,99 @@ metadata:
     name: mongodb-secret
     type: Opaque
     data:
-        mongo-root-username:
-        mongo-root-password:
+        mongo-root-username: <something-encoded>
+        mongo-root-password: <something-encoded>
 ```
 
-The passwd and username should be base62 encoded
+The passwd and username should be base64 encoded:
+echo -n 'username' | base64
+
+4. `kubectl apply -f secret` 
+5. referencing the secret in the mongo configuration file (with secretFrom)
+6. creating the mongo deployment
+
+we can put multiple documents in 1 file, we need to separate them by ---
+7. adding the service part and applying the service : kubectl apply -f mongo config file
+
+kubectl get all | grep mongodb
+
+8. creating a new file for mongo express
+
+```yaml
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+    name: mongo-express
+    labels:
+        app: mongo-express
+spec:
+    replicas : 1
+    selector:
+        matchLabels:
+            app: mongo-express
+    template: #pod definition
+        metadata: 
+            labels:
+                app: mongo-express
+        spec:
+            containers:
+            - name : mongo-express
+              image : mongo-express
+              ports:
+              - containerPort: 8081
+              env:
+              - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+                valueFrom: 
+                    secretKeyRef: 
+                        name: mongodb-secret
+                        key: mongo-root-username
+              - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+                valueFrom:
+                    secretKeyRef: 
+                        name: mongodb-secret
+                        key: mongo-root-password      
+              - name: ME_CONFIG_MONGODB_SERVER
+                valueFrom:
+                    configMapKeyRef:  
+                        name: mongodb-configmap  # added after step 9
+                        key: database_url
+     ---
+    appVersion: v1   #adding this only in step 10
+    kind: Service
+    metadata:
+        name: mongodb-express-service
+    spec:
+        selector: 
+            app: mongo-express
+        type: LoadBalancer # another name for external service
+        ports:
+        - protocol: TCP
+          port: 8081
+          targetPort: 8081
+          nodePort: 30000 # must be between 30000-32767
+```
+ConfigMap:  - external configuration
+            - centrlized
+
+9. creating the Config Map
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: mongodb-configmap
+data:
+    database_url: mongodb-service
+```
+
+if we want to reference the config map inside the deployment, we need first to create it
+kubectl apply -f mongo-configmap.yaml
+kubectl apply -f mongo-express.yaml
+
+10. we need an external service, so we can access mongo from the web
+
+we add the service in the same file with the mongo express
+
+kubectl apply -f mongo-express.yaml
+
+minikube service mongo-express-service => creates a server web page
