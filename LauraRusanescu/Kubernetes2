@@ -1,0 +1,95 @@
+# Detailed Notes - Part 2
+
+## K8s YAML Configuration File (1:16:16)
+
+### Structure of a YAML File
+
+A Kubernetes YAML configuration file describes the desired state of a Kubernetes resource. The file is divided into several sections, each with a specific purpose:
+
+- **apiVersion**
+  - Specifies the version of the Kubernetes API used to create the resource.
+  - Example: `apiVersion: v1` (for core resources like Pods and Services), `apiVersion: apps/v1` (for higher-level resources like Deployments and StatefulSets).
+
+- **kind**
+  - Defines the type of resource to be created.
+  - Examples: `Pod`, `Service`, `Deployment`, `ConfigMap`, `Secret`, `Ingress`.
+
+- **metadata**
+  - Contains metadata about the resource, including:
+    - **name:** The name of the resource (e.g., `nginx-deployment`).
+    - **namespace:** The namespace where the resource resides. Default is `default` if not specified.
+    - **labels:** Key-value pairs used to organize and select resources (e.g., `app: nginx`).
+
+- **spec**
+  - Defines the desired state of the resource and its configuration details.
+  - The content of the `spec` field varies depending on the `kind` of resource.
+  
+  - **For a Pod:**
+    ```yaml
+    spec:
+      containers:
+        - name: my-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+    ```
+    - **containers:** A list of container specifications for the Pod.
+    - **name:** The name of the container.
+    - **image:** The Docker image to use for the container.
+    - **ports:** A list of ports to expose from the container.
+
+  - **For a Deployment:**
+    ```yaml
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          app: my-app
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+            - name: my-container
+              image: nginx:latest
+              ports:
+                - containerPort: 80
+    ```
+    - **replicas:** The number of Pod replicas to run.
+    - **selector:** Defines how to select the Pods that belong to this Deployment.
+    - **template:** Defines the Pod template used to create Pods.
+      - **metadata:** Metadata for the Pods created by the Deployment.
+      - **spec:** Specification for the Pods, similar to the Pod spec described earlier.
+
+  - **For a Service:**
+    ```yaml
+    spec:
+      selector:
+        app: my-app
+      ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80
+      type: ClusterIP
+    ```
+    - **selector:** Determines which Pods the Service will route traffic to, based on labels.
+    - **ports:** Configuration for port mapping.
+      - **port:** The port on which the Service is exposed.
+      - **targetPort:** The port on the Pods that the Service routes to.
+    - **type:** The type of Service, such as `ClusterIP`, `NodePort`, or `LoadBalancer`.
+
+### Example YAML Files
+
+- **Pod Example:**
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: my-pod
+  spec:
+    containers:
+      - name: my-container
+        image: nginx:latest
+        ports:
+          - containerPort: 80
