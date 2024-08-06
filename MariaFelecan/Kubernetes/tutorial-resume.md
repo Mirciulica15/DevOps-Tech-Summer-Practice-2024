@@ -270,15 +270,15 @@ The passwd and username should be base64 encoded:
 echo -n 'username' | base64
 
 4. `kubectl apply -f secret` 
-5. referencing the secret in the mongo configuration file (with secretFrom)
-6. creating the mongo deployment
+5. `referencing the secret in the mongo configuration file (with secretFrom)`
+6. `creating the mongo deployment`
 
 we can put multiple documents in 1 file, we need to separate them by ---
-7. adding the service part and applying the service : kubectl apply -f mongo config file
+7. `adding the service part and applying the service` : kubectl apply -f mongo config file
 
 kubectl get all | grep mongodb
 
-8. creating a new file for mongo express
+8. `creating a new file for mongo express`
 
 ```yaml
 apiVersion : apps/v1
@@ -336,7 +336,7 @@ spec:
 ConfigMap:  - external configuration
             - centrlized
 
-9. creating the Config Map
+9. `creating the Config Map`
 
 ```yaml
 apiVersion: v1
@@ -351,10 +351,116 @@ if we want to reference the config map inside the deployment, we need first to c
 kubectl apply -f mongo-configmap.yaml
 kubectl apply -f mongo-express.yaml
 
-10. we need an external service, so we can access mongo from the web
+10. `we need an external service, so we can access mongo from the web`
 
 we add the service in the same file with the mongo express
 
 kubectl apply -f mongo-express.yaml
 
 minikube service mongo-express-service => creates a server web page
+
+## Kubernetees Namespaces
+
+We can organize a cluster in namespaces
+Namespace = virtual cluster inside the cluster
+There are **4 namespaces by default**:
+1. `kube-system`
+    not meant for our use, should not be modified
+    syste processes are deployed here
+2. `kube-public`
+    publicely accessible data
+    a config map which contains cluster information
+3. `kube-node-lease`
+    each node has associated lease object in namespaces
+
+    Leases in Kubernetes help manage and organize tasks by ensuring only one component (like a controller) is the leader at a time. This prevents conflicts and helps keep things running smoothly in a cluster
+
+    this determines the availability of a node
+4. `default` : resources we create are located here
+
+**Creating a namespace**
+
+- Using kubectl create namespace <name>
+- Using namespace config file
+
+**Why should i use namespaces?**
+
+- if we use only the default namespaces, we cant get any overview of what we have in there, because its going to have way to much stuff from many places
+=> we should group resources into namespaces: ex: database namespacem monitoring namespace, nginx-ingress namespace,, elastic stack namespaces
+
+- if two teams work in the same namespace, and have deployments with same name but different configurations, they would overwrite each other
+
+- if we have 2 versions of the same application in the same cluster
+
+- access limits for resources meant to be seen by only some workers
+
+- we can put a limit to CPU, RAM, Storage usage per namespace
+
+**Characteristics of namespaces**
+
+- we cant access most resoures from another namespace => each namespace must create their own ConfigMap, even if they reference the same resources
+
+## Creating a component in namespaces
+
+By default, if we dont define a specific namespace, components are created in  default namespace
+
+**Adding the namespace**: 
+1. kubectl apply -f mysql-configmap.yaml --namespace=my-namespace
+2. from the configuration file of the config map, in metadata, we can write namespace: my-namespace - BETTER WAY, bc its better documented
+
+**Changing the namespace**
+With kubens
+1. install kubencx
+2. kubens => this will give all the namespaces and highlight the ones that are active
+3. kubens my-namespace => this changes the active namespace to my-namespace
+
+## Kubernetees Ingress explained
+
+When we only have the service, we can access the web app through http://service-ip:port
+
+The way to avoid having an ugly link is to use ingress:
+
+we dont open the app through ip address and port, but a link name that forwards the request to the service link
+
+**Ingress file example:**
+
+- Simple http, no secure connection configuration
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+    name: myapp-ingress
+spec:
+    rules:
+    - host: myapp.com
+      http:
+        paths: 
+        - backend:
+            serviceName: myapp-internal-service
+            servicePort: 8080
+```
+
+### How to configure ingress in my cluster:
+
+Ingress Controller Pod = evaliates all the rules, manages redirections, entrypoint to cluster
+
+Cloud Load Balancer implemented by cloud provider -> Ingress Controller Pod
+
+**Installing ingress controller in minikube:** *minikube addons enable ingress*
+
+dashboard-ingress.yaml:
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+    name: dashboard-ingress
+    namespace: kubernetees-dashboard
+spec: 
+    rules:
+    - host: dashboard.com
+      http: 
+        paths
+```
+
