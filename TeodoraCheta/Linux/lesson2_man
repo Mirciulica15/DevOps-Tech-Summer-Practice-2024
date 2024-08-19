@@ -1,0 +1,8 @@
+$ man nume_comanda
+q =quit
+-f =number of pages/sections
+$ whatis nume_comanda = shows short description of the functionality
+-k =searches for the given command through all man pages, and returns all of them as output
+-w =returns the location of the file from where the page is rendered
+
+
