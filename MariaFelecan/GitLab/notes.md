@@ -30,5 +30,7 @@ CD: deploy to dev, deploy to staging, deploy to production
     -> job to run the test: 
 
     run_tests: 
+        image : python # we need to fixate the image, so it doesnt change with updates
+        before_scri[t:]
         script: 
         - make test (ex of the command we use to run tests)
