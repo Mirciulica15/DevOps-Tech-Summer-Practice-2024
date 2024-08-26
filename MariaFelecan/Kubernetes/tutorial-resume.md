@@ -318,7 +318,7 @@ spec:
                     configMapKeyRef:  
                         name: mongodb-configmap  # added after step 9
                         key: database_url
-     ---
+    ---
     appVersion: v1   #adding this only in step 10
     kind: Service
     metadata:
@@ -443,7 +443,7 @@ spec:
 
 ### How to configure ingress in my cluster:
 
-Ingress Controller Pod = evaliates all the rules, manages redirections, entrypoint to cluster
+Ingress Controller Pod = evaluates all the rules, manages redirections, entrypoint to cluster
 
 Cloud Load Balancer implemented by cloud provider -> Ingress Controller Pod
 
@@ -459,8 +459,67 @@ metadata:
     namespace: kubernetees-dashboard
 spec: 
     rules:
+    - host: dashboard.com #we need to resolve the ip address 
+      http: 
+        paths: 
+        - backend: 
+            serviceName: name
+            servicePort: 80
+
+We can also put specific paths:
+http:
+    path: /analytics
+    backend:
+        serviceName: cv
+        servicePort: cv
+```
+kubectl apply -f dashboard-ingress.yaml
+
+### Putting the adress of the ingress in the etc files
+
+sudo vim /etc/hosts:
+
+we need to put the ip adress and the mapped name
+
+### Ingress default backend
+
+The backend that creates functionalities, for example shows 404 page not found.
+We can write a custom backend (service), or we can just stay with the default one.
+
+
+## Configurating a TLS certificate - https//
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+    name: dashboard-ingress
+    namespace: kubernetees-dashboard
+spec: 
+    tls:  ##configuring  tls
+    - hosts: 
+        - myapp.com 
+            secretName : myapp-secret-tls   ### this will actually be the name of a Secret file
+    rules:
     - host: dashboard.com
       http: 
-        paths
+        paths: 
+        -path: /
+        - backend: 
+            serviceName: name
+            servicePort: 80
 ```
 
+The Secret file:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata: 
+    name: my-app-secret-tls
+    namespace: default # we have to create the secret in the same namespace as the ingress component
+data: 
+    tls.crt: base64 encoded cert  # these are file contents, NOT file paths
+    tls.key: base64 encoded key
+tye: kubernetes.io/tls ##this is a must 
+```
