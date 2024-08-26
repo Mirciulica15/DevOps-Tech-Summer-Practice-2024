@@ -1125,5 +1125,142 @@ Make a request to localhost:80 :
 curl localhost:80
 
 
+DockerFile structure:
+
+FUNDAMENTAL INSTRUCTIONS:
+
+1. FROM
+2. ARG
+
+CONFIG INSTRUCTIONS:
+
+1. RUN 
+2. ADD | COPY
+3. ENV
+
+EXECUTION INSTRUCTIONS:
+
+1. CMD
+2. ENTRYPOINT
+3. EXPOSE
+
+https://www.udemy.com/course/docker-essentials/learn/lecture/12339842#overview
+
+Docker image is a colection of layers, that are sequential and mostly read-omly. 
+
+The only exception to the layer rules is the top layer that is Read-Write type. 
+
+Docker images can be pushed and pulled from dockerhub.
+
+Useful commands for Docker Images:
+
+* Docker search **something**
+  
+Arguments:
+
+* --filter
+ * --format
+
+* Docker images ls  
+Shows all images on the Host
+
+
+* Docker image pull nginx:latest
+
+Pulls from Docker Hub the latest version of nginx.
+
+Flag: 
+--all-tags:  Pulls all versions.
+
+*Docker image push **ourimage**
+
+Sends the image to DockerHub.
+
+More Info about an Image:
+
+* docker image inspect ubuntu:latest
+
+* docker inage history ubuntu  
+
+Shows all layers of our image
+
+## Pruning and Removing Images
+
+1. Removing an image :   docker image rm nginx:1-alpine-perl
+2. docker rmi "image id" 
+
+## Making a container
+
+It is a running instance of an image.
+Adds a writable layer on top of image layers and works on it.
+
+Can talk to other containers.
+
+**Working with containers**
+
+* docker container start "container name"
+* docker container stop "container name"
+* docker container restart --time 6 "container name"
+* docker container rename "container name" "new name"
+* docker container attach my-box
+
+Acces container from terminal
+
+*docker exec command -it my-box pwd
+
+Docker execute command
+
+Se poate folosi **-P** pentru a lasa docker-ul sa isi dea porturi singur.
+
+## Erasing Containers.
+
+* docker container rm name
+* If the container is running use:  docker container rm name --force
+*removing stopped containers: docker container prune
+
+
+Aapplications that create and store data (databases, for example) can store their data in a special kind of Docker object called a volume, so that data can persist and be shared with other containers. We will explore volumes in a later lab.
+
+
+## CONTAINER NETWORKING
+
+Docker network driver:
+
+prin docker network command
+
+Container networking model:
+
+1. Host networking Infrastructure(hosts the kernel, ca de exemplu linux stack)
+2. Docker networking drivers(Network drivers, IPAM drivers )
+3. Docker Engine
+4. Container Network
+
+The docker network command is the main command for configuring and managing container networks. Run the docker network command from the first terminal.
+
+Commands:
+
+  connect     Connect a container to a network
+
+  create      Create a network
+
+  disconnect  Disconnect a container from a network
+
+  inspect     Display detailed information on one or more networks
+
+  ls          List networks
+
+  prune       Remove all unused networks
+
+  rm          Remove one or more networks
+
+  Run a docker network ls command to view existing container networks on the current Docker host.
+
+The output above shows the container networks that are created as part of a standard installation of Docker.
+
+New networks that you create will also show up in the output of the docker network ls command.
+
+You can see that each network gets a unique ID and NAME. Each network is also associated with a single driver. Notice that the “bridge” network and the “host” network have the same name as their respective drivers
+
+
 
 
