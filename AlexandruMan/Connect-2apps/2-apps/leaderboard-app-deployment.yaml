@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leaderboard-app
+  namespace: leaderboard-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: leaderboard-app
+  template:
+    metadata:
+      labels:
+        app: leaderboard-app
+    spec:
+      containers:
+      - name: leaderboard-app
+        image: alexman17/leaderboard-app:latest
+        ports:
+        - containerPort: 80

@@ -615,6 +615,92 @@ OPENS CRONTAB EDITOR
 
 stat and file  
 
+file - just what the file contains  
+
+stat - more in depth  
+
+-----------------------------SOFT AND HARD LINKS------------------------------  
+ 
+soft links - open from the links location (kind of a pointer to the source)  
+
+hard link - open from actual link/app  
+
+ln -s (source) (target) => create link soft
+
+ln (source) (target) => creates hard link  
+
+unlink (Link) => delete link  
+
+rm (Link) => remove link  
+
+----------------------------INODES------------------------------  
+
+df -i /dev/vda1  
+
+To check inode of specific file, we use -i argument for ls command.  
+
+----------------------------PERMISIONS-----------------------------
+
+0 123 456 789  
+
+0 - Object type  
+123 - Owners permisions  
+456 - Groups permisions  
+789 - Others permisions  
+
+
+- - normal, regular file  
+d - directory  
+l - soft (symbolic) link  
+b - block special file (like hard drive)  
+c - character special file (like /dev/null)  
+n - network file  
+p - FIFO  
+s - socket  
+
+
+Digit	Meaning  
+0	no access  
+1	eXecute  
+2	Write  
+3	Write + eXecute  
+4	Read  
+5	Read + eXecute  
+6	Read + Write  
+7	Read + Write + eXecute  
+
+chmod permissions objects  
+
+r - read  
+w - write  
+x - execute  
+
+u - owner  
+g - group  
+o - other  
+a - all  
+
+
+use + - to add and remove permisions  
+
+chgrp <group> <objects> => change the group  
+
+add -R for recursive to change the files inside the directory aswell  
+
+-----------
+
+chown <owner>:<group> <objects> => change own + group
+
+
+
+
+
+
+
+
+
+
+
 
 
 

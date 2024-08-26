@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rock Paper Scissors</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    button { margin: 5px; padding: 10px 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>Rock Paper Scissors</h1>
+  <p>Enter your name:</p>
+  <input type="text" id="playerName" placeholder="Your name" />
+  <p>Choose your move:</p>
+  <button onclick="playGame('rock')">Rock</button>
+  <button onclick="playGame('paper')">Paper</button>
+  <button onclick="playGame('scissors')">Scissors</button>
+
+  <h2 id="result"></h2>
+
+  <script>
+    async function playGame(playerChoice) {
+      const playerName = document.getElementById('playerName').value;
+      if (!playerName) {
+        alert('Please enter your name!');
+        return;
+      }
+
+      const response = await fetch('/play', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playerName, playerChoice })
+      });
+
+      const data = await response.json();
+      document.getElementById('result').textContent = `You chose ${playerChoice}, Computer chose ${data.computerChoice}. ${data.winner === 'Draw' ? 'It\'s a draw!' : data.winner + ' wins!'}`;
+    }
+  </script>
+</body>
+</html>

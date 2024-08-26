@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leaderboard-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: leaderboard-app
+  template:
+    metadata:
+      labels:
+        app: leaderboard-app
+    spec:
+      containers:
+      - name: leaderboard-app
+        image: alexman17/leaderboard-app:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: leaderboard-app-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: leaderboard-app
